@@ -57,7 +57,8 @@ def permissions_workflow():
                 branch_number = int(branch_number) - 1
                 if branch_number >= 0 and branch_number < len(branches):
                     selected_branch = branches[branch_number]
-                    update_permissions_file(permissions, selected_branch, permissions_file)
+                    permissions = update_permissions_file(permissions, selected_branch, permissions_file)
+                    list_users_with_access(permissions, selected_branch)
                 else:
                     print("Invalid branch number.")
             except ValueError:
@@ -68,12 +69,22 @@ def permissions_workflow():
     else:
         print("Permissions file not found or invalid.")
 
+def list_users_with_access(permissions, branch):
+    users = permissions['branches'].get(branch, [])
+    if users:
+        print(f"Users with access to branch '{branch}':")
+        for user in users:
+            print(colorize(user, 36))
+    else:
+        print(f"No users currently have access to branch '{branch}'.")
+
 def update_permissions_file(permissions, branch, file_path):
     if branch not in permissions['branches']:
         permissions['branches'][branch] = []
     with open(file_path, 'w') as file:
         json.dump(permissions, file, indent=4)
     print(f"Added branch '{branch}' to permissions.")
+    return permissions
 def check_permissions_file(file_path):
     try:
         with open(file_path, 'r') as file:
