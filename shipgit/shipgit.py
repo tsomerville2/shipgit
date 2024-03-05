@@ -38,10 +38,33 @@ def permissions_workflow():
     permissions = check_permissions_file(permissions_file)
     if permissions:
         print("Permissions file found and loaded.")
+        branches = list_branches()
+        if branches:
+            print("Available branches:")
+            for i, branch in enumerate(branches):
+                print(colorize(f"{i + 1}) {branch}", 36))
+            branch_number = input("Select a branch to add permissions for (number): ")
+            try:
+                branch_number = int(branch_number) - 1
+                if branch_number >= 0 and branch_number < len(branches):
+                    selected_branch = branches[branch_number]
+                    update_permissions_file(permissions, selected_branch, permissions_file)
+                else:
+                    print("Invalid branch number.")
+            except ValueError:
+                print("Invalid input. Please enter a number.")
+        else:
+            print("No branches available.")
         # Further processing can be done here as needed
     else:
         print("Permissions file not found or invalid.")
 
+def update_permissions_file(permissions, branch, file_path):
+    if branch not in permissions['branches']:
+        permissions['branches'][branch] = []
+    with open(file_path, 'w') as file:
+        json.dump(permissions, file, indent=4)
+    print(f"Added branch '{branch}' to permissions.")
 def check_permissions_file(file_path):
     try:
         with open(file_path, 'r') as file:
@@ -225,4 +248,12 @@ if __name__ == "__main__":
    main_menu()
     #show all colors for colorize
     # for i in range(30, 108):
-    #     print(f"\033[{i}mColor {i}\033[0m")
+    #     print(f"\033[{i}mColor {i}\033[0m")def list_branches():
+    command = "git branch -a"
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"Error listing branches: {result.stderr}")
+        return []
+    branches = [branch.strip().replace('* ', '') for branch in result.stdout.splitlines()]
+    return branches
+
