@@ -12,11 +12,8 @@ def main_menu():
 ███████  ██  ████  █████  █████  ██████████████  ████  █████  ████████  ████
 ██      ███  ████  ██        ██  ███████████████      ███        █████  ████
 ████████████████████████████████████████████████████████████████████████████                                                                  
-
-def main_menu():
-    print(colorize("""
-...ASCII Art...
     """, 32))  # Ensure the ASCII art string is properly terminated
+ 
     print(colorize("Select an operation:", 100))
     print(colorize("1) TAGGING", 46))
     print(colorize("2) DEPLOYING", 41))
