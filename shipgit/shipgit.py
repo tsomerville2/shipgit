@@ -59,6 +59,11 @@ def permissions_workflow():
                     selected_branch = branches[branch_number]
                     permissions = update_permissions_file(permissions, selected_branch, permissions_file)
                     list_users_with_access(permissions, selected_branch)
+                    github_username = get_github_username()
+                    if github_username:
+                        print(f"Your GitHub username is: {colorize(github_username, 36)}")
+                    else:
+                        print("GitHub username not found in local git config.")
                 else:
                     print("Invalid branch number.")
             except ValueError:
@@ -68,6 +73,13 @@ def permissions_workflow():
         # Further processing can be done here as needed
     else:
         print("Permissions file not found or invalid.")
+
+def get_github_username():
+    command = "git config user.name"
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    if result.returncode == 0 and result.stdout:
+        return result.stdout.strip()
+    return None
 
 def list_users_with_access(permissions, branch):
     users = permissions['branches'].get(branch, [])
