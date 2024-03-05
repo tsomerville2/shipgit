@@ -13,18 +13,59 @@ def main_menu():
 ██      ███  ████  ██        ██  ███████████████      ███        █████  ████
 ████████████████████████████████████████████████████████████████████████████                                                                  
 
+def main_menu():
+    print(colorize(r"""
+...ASCII Art...
     """, 32))
     print(colorize("Select an operation:", 100))
     print(colorize("1) TAGGING", 46))
     print(colorize("2) DEPLOYING", 41))
+    print(colorize("3) PERMISSIONS", 44))
+    choice = input(colorize("Enter your choice (1, 2, or 3): ", 100))
     choice = input(colorize("Enter your choice (1 or 2): ", 100))
     if choice == '1':
         tagging_workflow()
     elif choice == '2':
         deploying_workflow()
+    elif choice == '3':
+        permissions_workflow()
     else:
         print("Invalid choice. Please select 1 or 2.")
+        print("Invalid choice. Please select 1, 2, or 3.")
         main_menu()
+
+def permissions_workflow():
+    print()
+    you_chose_permissions = colorize("PERMISSIONS Chosen", 44)
+    print(you_chose_permissions)
+    permissions_file = 'permissions.shipgit'
+    permissions = check_permissions_file(permissions_file)
+    if permissions:
+        print("Permissions file found and loaded.")
+        # Further processing can be done here as needed
+    else:
+        print("Permissions file not found or invalid.")
+
+def check_permissions_file(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            permissions_data = file.read()
+            return parse_permissions(permissions_data)
+    except FileNotFoundError:
+        print(f"No permissions file found at {file_path}.")
+        return None
+    except Exception as e:
+        print(f"An error occurred while reading the permissions file: {e}")
+        return None
+
+def parse_permissions(json_data):
+    import json
+    try:
+        permissions = json.loads(json_data)
+        return permissions
+    except json.JSONDecodeError as e:
+        print(f"An error occurred while parsing the permissions file: {e}")
+        return None
 
 def find_commits_by_phrase(search_phrase):
    command = f"git log --grep='{search_phrase}' --oneline"
