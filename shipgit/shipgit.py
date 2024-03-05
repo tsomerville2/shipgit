@@ -14,7 +14,7 @@ def main_menu():
 ████████████████████████████████████████████████████████████████████████████                                                                  
 
 def main_menu():
-    print(colorize(r"""
+    print(colorize("""
 ...ASCII Art...
     """, 32))
     print(colorize("Select an operation:", 100))
