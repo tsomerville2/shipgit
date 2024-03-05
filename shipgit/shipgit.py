@@ -46,15 +46,15 @@ def check_permissions_file(file_path):
         with open(file_path, 'r') as file:
             permissions_data = file.read()
             return parse_permissions(permissions_data)
-    except Exception as e:
-        print(f"An error occurred while reading the permissions file: {e}")
-        return None
     except FileNotFoundError:
         default_permissions = {'branches': {}}
         with open(file_path, 'w') as file:
             json.dump(default_permissions, file, indent=4)
         print(f"Created default permissions file at {file_path}.")
         return default_permissions
+    except Exception as e:
+        print(f"An error occurred while reading the permissions file: {e}")
+        return None
 
 def parse_permissions(json_data):
     import json
