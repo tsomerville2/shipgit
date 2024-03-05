@@ -30,6 +30,15 @@ def main_menu():
         print("Invalid choice. Please select 1, 2, or 3.")
         main_menu()
 
+def list_branches():
+    command = "git branch --list"
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"Error listing branches: {result.stderr}")
+        return []
+    branches = [branch.strip().replace('* ', '') for branch in result.stdout.splitlines()]
+    return branches
+
 def permissions_workflow():
     print()
     you_chose_permissions = colorize("PERMISSIONS Chosen", 44)
