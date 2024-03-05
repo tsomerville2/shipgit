@@ -14,3 +14,25 @@ Remember, the success of this CI/CD approach relies on diligent and frequent int
 
 # Ship It commands
 
+Ship It provides a set of commands designed to streamline the CI/CD process. Below is a list of available commands and their descriptions:
+
+## Tagging
+`shipit tag <tagname>` - Creates a new tag with the specified name on the current commit in the main branch.
+
+## Deployment
+`shipit deploy <tagname> <branchname>` - Deploys the specified tag to the given branch. This is typically used to update a customer-specific branch with a stable release.
+
+## Status Checks
+`shipit status` - Provides the current status of the main branch, including the latest commit and any associated tags.
+
+## Rollback
+`shipit rollback <branchname> <tagname>` - Rolls back the specified branch to the state of a previous tag, in case a deployment introduces issues.
+
+## Branch Management
+`shipit branch list` - Lists all branches currently being managed by Ship It.
+`shipit branch create <branchname>` - Creates a new branch for a customer or machine.
+`shipit branch delete <branchname>` - Deletes a branch when it is no longer needed.
+
+These commands are designed to be intuitive and align with the CI/CD philosophy of Ship It. They enable developers and operations teams to manage releases, deployments, and rollbacks efficiently, ensuring that each customer or environment receives the correct version of the software.
+
+For more detailed information on each command and additional options, refer to the Ship It Command Line Interface (CLI) documentation.
