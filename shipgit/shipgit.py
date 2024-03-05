@@ -46,7 +46,10 @@ def check_permissions_file(file_path):
     try:
         with open(file_path, 'r') as file:
             permissions_data = file.read()
-            return parse_permissions(permissions_data)
+            if permissions_data.strip():
+                return parse_permissions(permissions_data)
+            else:
+                raise ValueError("Permissions file is empty.")
     except FileNotFoundError:
         default_permissions = {'branches': {}}
         with open(file_path, 'w') as file:
