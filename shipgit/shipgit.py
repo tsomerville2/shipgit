@@ -249,11 +249,5 @@ if __name__ == "__main__":
     #show all colors for colorize
     # for i in range(30, 108):
     #     print(f"\033[{i}mColor {i}\033[0m")def list_branches():
-    command = "git branch -a"
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
-    if result.returncode != 0:
-        print(f"Error listing branches: {result.stderr}")
-        return []
-    branches = [branch.strip().replace('* ', '') for branch in result.stdout.splitlines()]
-    return branches
+
 
