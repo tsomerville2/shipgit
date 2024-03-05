@@ -14,3 +14,10 @@ Remember, the success of this CI/CD approach relies on diligent and frequent int
 
 # Ship It commands
 
+Ship It provides two main interactive commands that users can choose from within the menu:
+
+1. **TAGGING**: This command allows users to create a tag for a specific commit. The user is prompted to enter a search phrase to find commits, select the desired commit from a list, and then provide a tag name. The tag is then created and pushed to the remote repository.
+
+2. **DEPLOYING**: This command is used to deploy a specific tag to a branch. The user selects a tag from a list of the most recent tags and then chooses a branch to deploy to. If the branch does not exist, it is created. The selected tag is then merged into the chosen branch and pushed to the remote repository, effectively deploying the code.
+
+These commands are part of an interactive menu that guides the user through the process, ensuring that the CI/CD workflow is followed and that the main branch and customer-specific branches are managed effectively.
