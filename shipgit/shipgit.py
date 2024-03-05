@@ -4,7 +4,7 @@ def colorize(text, color_code):
     return f"\033[{color_code}m{text}\033[0m"
 
 def main_menu():
-    print(colorize(r"""
+    print(colorize("""
 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 ░░      ░░░  ░░░░  ░░        ░░       ░░░░░░░░░░      ░░░        ░░        ░
 ▒  ▒▒▒▒▒▒▒▒  ▒▒▒▒  ▒▒▒▒▒  ▒▒▒▒▒  ▒▒▒▒  ▒▒▒▒▒▒▒▒  ▒▒▒▒▒▒▒▒▒▒▒  ▒▒▒▒▒▒▒▒  ▒▒▒▒
@@ -16,13 +16,12 @@ def main_menu():
 def main_menu():
     print(colorize("""
 ...ASCII Art...
-    """, 32))
+    """, 32))  # Ensure the ASCII art string is properly terminated
     print(colorize("Select an operation:", 100))
     print(colorize("1) TAGGING", 46))
     print(colorize("2) DEPLOYING", 41))
     print(colorize("3) PERMISSIONS", 44))
-    choice = input(colorize("Enter your choice (1, 2, or 3): ", 100))
-    choice = input(colorize("Enter your choice (1 or 2): ", 100))
+    choice = input(colorize("Enter your choice (1, 2, or 3): ", 100))  # Correct the input prompt
     if choice == '1':
         tagging_workflow()
     elif choice == '2':
@@ -30,7 +29,6 @@ def main_menu():
     elif choice == '3':
         permissions_workflow()
     else:
-        print("Invalid choice. Please select 1 or 2.")
         print("Invalid choice. Please select 1, 2, or 3.")
         main_menu()
 
