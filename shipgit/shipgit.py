@@ -272,8 +272,6 @@ def deploying_workflow():
             selected_tag = select_item(tags, colorize("\nChoose a tag to deploy:", 41))
             if selected_tag:
                 deployment_process(selected_tag, original_branch, permissions, selected_branch)
-        if check_branch_permissions(selected_branch, permissions):
-            deployment_process(selected_tag, original_branch, permissions)
     else:
         print("Error: Unable to read permissions file.")
 
@@ -316,46 +314,47 @@ def tag_and_push(tag_name, commit_hash):
        print("Tag pushed to remote.")
 
 def deployment_process(selected_tag, original_branch, permissions, selected_branch):
-   branches = list_branches()
-   deploy_to_branch(selected_tag, branches, selected_branch, original_branch)
+    branches = list_branches()  # Assuming this function fetches a list of all branches
+    deploy_to_branch(selected_tag, branches, selected_branch, original_branch)
 
 def deploy_to_branch(selected_tag, branches, selected_branch, original_branch):
-   selected_branch = selected_branch.replace('*', '').strip()
-   print(colorize(f"\nSelected branch: {selected_branch}\n", 36))
-   branch_exists = selected_branch.strip('* ').strip() in [branch.strip('* ').strip() for branch in branches]
-   default_remote_branch = get_default_remote_branch()
-   if selected_branch == default_remote_branch:
-       print(f"Error: Deployment to the default remote branch '{default_remote_branch}' is not allowed.")
-       return
-   branch_exists = selected_branch in [branch.strip('* ').strip() for branch in branches]
-   stash_result = subprocess.run("git stash push -m 'Auto-stash by onering.py'", shell=True, capture_output=True, text=True)
-   if stash_result.returncode != 0:
-       print(f"Error stashing changes: {stash_result.stderr}")
-       return
-   if not branch_exists:
-       subprocess.run(f"git checkout -b {selected_branch}", shell=True, check=True)
-       print("New branch created and checked out.")
-   else:
-       subprocess.run(f"git checkout {selected_branch}", shell=True, check=True)
-   deploy_tag(selected_tag, selected_branch)
-   pop_result = subprocess.run("git stash pop", shell=True, capture_output=True, text=True)
-   if pop_result.returncode != 0:
-       print(f"Error applying stashed changes: {pop_result.stderr}")
-   subprocess.run(f"git checkout {original_branch}", shell=True, check=True)
-   print(f"Returned to original branch: {original_branch}")
+    selected_branch = selected_branch.replace('*', '').strip()
+    print(colorize(f"\nSelected branch: {selected_branch}\n", 36))
+    branch_exists = selected_branch in [branch.strip('* ').strip() for branch in branches]
+    default_remote_branch = get_default_remote_branch()
 
+    if selected_branch == default_remote_branch:
+        print(f"Error: Deployment to the default remote branch '{default_remote_branch}' is not allowed.")
+        return
+
+    # Stash local changes on the current branch before switching
+    subprocess.run("git stash push -m 'Auto-stash by deployment process'", shell=True, check=True)
+
+    # Checkout the target branch, create if it doesn't exist
+    if not branch_exists:
+        subprocess.run(f"git checkout -b {selected_branch}", shell=True, check=True)
+        print("New branch created and checked out.")
+    else:
+        subprocess.run(f"git checkout {selected_branch}", shell=True, check=True)
+
+    # Force update the branch to the selected tag
+    deploy_tag(selected_tag, selected_branch)
+
+    # Return to the original branch and apply stashed changes, if any
+    subprocess.run(f"git checkout {original_branch}", shell=True, check=True)
+    subprocess.run("git stash pop", shell=True, check=True)
+    print(f"Returned to original branch: {original_branch}\nDeployment complete!")
 
 def deploy_tag(tag, branch):
-   # Ensure we do not deploy to the default remote branch
-   if branch == get_default_remote_branch():
-       print(f"Error: Deployment to the default remote branch '{branch}' is not allowed.")
-       return
-   # Forcefully overwrite the branch with the tag
-   subprocess.run(f"git fetch --tags", shell=True, check=True)
-   subprocess.run(f"git checkout {branch}", shell=True, check=True)
-   subprocess.run(f"git reset --hard tags/{tag}", shell=True, check=True)
-   subprocess.run(f"git push --force origin {branch}", shell=True, check=True)
-   print(colorize("Deployment complete!", 36))
+    # Ensure the local repo is aware of all remote tags
+    subprocess.run("git fetch --tags", shell=True, check=True)
+
+    # Reset the branch to the state of the specified tag
+    subprocess.run(f"git reset --hard {tag}", shell=True, check=True)
+
+    # Force push the branch state to remote, aligning it with the tag
+    subprocess.run(f"git push --force origin {branch}", shell=True, check=True)
+    print(colorize("Deployment to branch complete! Branch is now at the state of the tag.", 36))
 
 if __name__ == "__main__":
    main_menu()
