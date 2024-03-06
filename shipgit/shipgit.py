@@ -253,7 +253,8 @@ def deploying_workflow():
        permissions_file = 'permissions.shipgit'
        permissions = check_permissions_file(permissions_file)
        if permissions:
-           deployment_process(selected_tag, original_branch, permissions)
+           if check_branch_permissions(selected_branch, permissions):
+               deployment_process(selected_tag, original_branch, permissions)
        else:
            print("Error: Unable to read permissions file.")
 
@@ -299,6 +300,8 @@ def deployment_process(selected_tag, original_branch, permissions):
    branch_output = subprocess.run("git branch", shell=True, capture_output=True, text=True).stdout
    branches = branch_output.splitlines()
    selected_branch = select_item(branches, colorize("\nChoose a branch to deploy to:", 43))
+   if selected_branch:
+       if check_branch_permissions(selected_branch, permissions):
    if selected_branch:
        if check_branch_permissions(selected_branch, permissions):
            deploy_to_branch(selected_branch, selected_tag, branches, original_branch)
