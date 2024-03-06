@@ -356,7 +356,17 @@ def deploy_to_branch(selected_tag, branches, selected_branch, original_branch):
 
     # Return to the original branch and apply stashed changes, if any
     subprocess.run(f"git checkout {original_branch}", shell=True, check=True)
-    subprocess.run("git stash pop", shell=True, check=True)
+    
+    # Check if there are stashes to pop
+    stash_list_output = subprocess.run("git stash list", shell=True, capture_output=True, text=True).stdout
+    if stash_list_output:
+        try:
+            subprocess.run("git stash pop", shell=True, check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"An error occurred while applying stashed changes: {e}")
+    else:
+        print("No stash entries found. Nothing to pop.")
+    
     print(f"Returned to original branch: {original_branch}\nDeployment complete!")
     main_menu()  # Return to the main menu after deployment is complete
 
