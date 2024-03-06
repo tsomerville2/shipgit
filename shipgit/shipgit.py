@@ -1,3 +1,10 @@
+# to build, change version in pyproject.toml, then run python -m build
+# to upload, run twine upload dist/* or dist/*.8* if you're on version 0.0.8
+# you will need to paste in your api key for pypi
+#
+# then any user can just 'pip install shipgit'
+# then simply type 'shipgit' to run the program
+
 import json
 import subprocess
 
@@ -12,7 +19,8 @@ def main_menu():
 ▓▓      ▓▓▓        ▓▓▓▓▓  ▓▓▓▓▓       ▓▓▓▓▓▓▓▓▓  ▓▓▓   ▓▓▓▓▓  ▓▓▓▓▓▓▓▓  ▓▓▓▓
 ███████  ██  ████  █████  █████  ██████████████  ████  █████  ████████  ████
 ██      ███  ████  ██        ██  ███████████████      ███        █████  ████
-████████████████████████████████████████████████████████████████████████████                                                                  
+████████████████████████████████████████████████████████████████████████████ 
+░░░ CREATED BY TRAVIS SOMERVILLE ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░                                    
     """, 32))  # Ensure the ASCII art string is properly terminated
  
     print(colorize("Select an operation:", 100))

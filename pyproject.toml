@@ -1,6 +1,6 @@
 [project]
 name = "shipgit" 
-version = "0.0.6"
+version = "0.0.9"
 authors = [
   { name="Travis Somerville", email="travis.somerville@gmail.com" },
 ]
