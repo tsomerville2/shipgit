@@ -31,6 +31,11 @@ def main_menu():
         main_menu()
 
 def commit_and_push_changes(file_path, commit_message):
+    # Check if there are changes to commit
+    status_result = subprocess.run("git status --porcelain", shell=True, capture_output=True, text=True)
+    if status_result.stdout.strip() == "":
+        print(colorize("No changes to commit.", 36))
+        return
     subprocess.run(f"git add {file_path}", shell=True, check=True)
     subprocess.run(f'git commit -m "{commit_message}"', shell=True, check=True)
     subprocess.run("git push", shell=True, check=True)
