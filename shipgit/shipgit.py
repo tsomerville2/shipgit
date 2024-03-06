@@ -77,7 +77,7 @@ def permissions_workflow():
 
 def manage_user_permissions(permissions, branch, username, file_path):
     while True:
-        print("\nPermission Management Options:")
+        print(f"\n{colorize(branch, 44)} Permission Management Options:")
         print(colorize("1) Add my username to the list", 36))
         print(colorize("2) Add my username and remove all others", 36))
         print(colorize("3) Add a specific username to the list", 36))
