@@ -253,6 +253,7 @@ def deploying_workflow():
        permissions_file = 'permissions.shipgit'
        permissions = check_permissions_file(permissions_file)
        if permissions:
+           check_branch_permissions = check_branch_permissions
            deployment_process(selected_tag, original_branch, permissions)
        else:
            print("Error: Unable to read permissions file.")
@@ -328,6 +329,7 @@ def deploy_to_branch(selected_branch, selected_tag, branches, original_branch):
    subprocess.run(f"git checkout {original_branch}", shell=True, check=True)
    print(f"Returned to original branch: {original_branch}")
 
+
 def deploy_tag(tag, branch):
    default_remote_branch = get_default_remote_branch()
    subprocess.run(f"git pull origin {default_remote_branch}", shell=True, check=True)
@@ -355,3 +357,4 @@ def check_branch_permissions(branch, permissions):
     else:
         print(f"Denied: User '{github_username}' does not have permission to perform operations on branch '{branch}'.")
         return False
+
