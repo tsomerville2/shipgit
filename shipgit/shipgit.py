@@ -245,25 +245,27 @@ def tag_commit(commit_hash):
    return tag_and_push(tag_name, commit_hash)
 
 def tagging_workflow():
-   print()
-   you_chose_tagging = colorize("TAGGING Chosen", 46)
-   print(you_chose_tagging)
-   search_phrase = input("Enter your commit search phrase (or just press enter to see last 20): ")
-   commits = find_commits_by_phrase(search_phrase)
-   selected_hash = select_commit(commits)
-   if selected_hash:
-       success = tag_commit(selected_hash)
-       if not success:
-           print("Tagging process failed. Returning to main menu.")
-           main_menu()
+    print()
+    you_chose_tagging = colorize("TAGGING Chosen", 46)
+    print(you_chose_tagging)
+    search_phrase = input("Enter your commit search phrase (or just press enter to see last 20): ")
+    commits = find_commits_by_phrase(search_phrase)
+    selected_hash = select_commit(commits)
+    if selected_hash:
+        success = tag_commit(selected_hash)
+        if not success:
+            print("Tagging process failed. Returning to main menu.")
+            main_menu()
+
+    main_menu()
 
 def get_last_tags(limit=20):
-   command = f"git tag --sort=-creatordate | head -n {limit}"
-   result = subprocess.run(command, shell=True, capture_output=True, text=True)
-   if result.returncode != 0:
-       print(f"Error fetching tags: {result.stderr}")
-       return []
-   return result.stdout.splitlines()
+    command = f"git tag --sort=-creatordate | head -n {limit}"
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"Error fetching tags: {result.stderr}")
+        return []
+    return result.stdout.splitlines()
 
 def select_item_or_create_new(items, message, create_prompt):
    print(f"{message}")
