@@ -40,8 +40,9 @@ def check_branch_permissions(branch, permissions):
         print(f"Users with access to branch '{branch}': {', '.join(branch_permissions)}")
         return True
     else:
-        print(f"Denied: User '{github_username}' does not have permission to perform operations on this branch.")
-        main_menu()
+        print(f"Denied: User '{github_username}' does not have permission to perform operations on this branch. Press Enter to return to the main menu.")
+        input()  # Wait for the user to hit enter
+        main_menu()  # Return to the main menu
 
 def list_branches():
     command = "git branch --list"
