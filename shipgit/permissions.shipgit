@@ -1,7 +1,6 @@
 {
     "branches": {
         "dev1": [
-            "dave",
             "tsomerville2"
         ],
         "master": [
