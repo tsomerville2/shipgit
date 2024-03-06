@@ -239,7 +239,9 @@ def select_commit(commits):
    return user_choice_of_commit(commits)
 
 def tag_commit(commit_hash):
-   tag_name = input(colorize("Enter the tag name: ", 100))
+   tag_name_input = input(colorize("Enter the tag name: ", 100))
+   # Replace spaces with underscores to create a valid tag name
+   tag_name = "_".join(tag_name_input.split())
    return tag_and_push(tag_name, commit_hash)
 
 def tagging_workflow():
