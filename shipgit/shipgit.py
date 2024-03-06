@@ -240,7 +240,7 @@ def select_commit(commits):
 
 def tag_commit(commit_hash):
    tag_name = input(colorize("Enter the tag name: ", 100))
-   tag_and_push(tag_name, commit_hash)
+   return tag_and_push(tag_name, commit_hash)
 
 def tagging_workflow():
    print()
@@ -250,7 +250,10 @@ def tagging_workflow():
    commits = find_commits_by_phrase(search_phrase)
    selected_hash = select_commit(commits)
    if selected_hash:
-       tag_commit(selected_hash)
+       success = tag_commit(selected_hash)
+       if not success:
+           print("Tagging process failed. Returning to main menu.")
+           main_menu()
 
 def get_last_tags(limit=20):
    command = f"git tag --sort=-creatordate | head -n {limit}"
@@ -322,11 +325,14 @@ def tag_and_push(tag_name, commit_hash):
    push_result = subprocess.run(push_command, shell=True, capture_output=True, text=True)
    if tag_result.returncode != 0:
        print(f"Tagging failed: {tag_result.stderr}")
+       return False
    elif push_result.returncode != 0:
        print(f"Failed to push tag: {push_result.stderr}")
+       return False
    else:
        print(colorize(f"Successfully tagged commit {commit_hash} with {tag_name}", 36))
        print("Tag pushed to remote.")
+       return True
 
 def deployment_process(selected_tag, original_branch, permissions, selected_branch):
     branches = list_branches()  # Assuming this function fetches a list of all branches
