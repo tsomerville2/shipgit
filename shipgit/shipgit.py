@@ -97,6 +97,7 @@ def manage_user_permissions(permissions, branch, username, file_path):
                 permissions['branches'][branch].append(username)
             else:
                 permissions['branches'][branch] = [username]
+            permissions['branches'][branch] = [username]
             update_permissions_file(permissions, branch, file_path)
             print(f"Set '{username}' as the only user with access to branch '{branch}'.")
         elif choice == '3':
