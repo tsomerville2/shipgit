@@ -259,13 +259,18 @@ def get_default_remote_branch():
    return result.stdout.strip()
 
 def deploying_workflow():
-   tags = get_last_tags()
-   selected_tag = select_item(tags, colorize("\nChoose a tag to deploy:", 41))
    original_branch = subprocess.run("git branch --show-current", shell=True, capture_output=True, text=True).stdout.strip()
-   if selected_tag:
        permissions_file = 'permissions.shipgit'
        permissions = check_permissions_file(permissions_file)
        if permissions:
+           branch_output = subprocess.run("git branch", shell=True, capture_output=True, text=True).stdout
+           branches = branch_output.splitlines()
+           selected_branch = select_item(branches, colorize("\nChoose a branch to deploy to:", 43))
+           if selected_branch and check_branch_permissions(selected_branch, permissions):
+               tags = get_last_tags()
+               selected_tag = select_item(tags, colorize("\nChoose a tag to deploy:", 41))
+               if selected_tag:
+                   deployment_process(selected_tag, original_branch, permissions, selected_branch)
            if check_branch_permissions(selected_branch, permissions):
                deployment_process(selected_tag, original_branch, permissions)
        else:
@@ -309,13 +314,8 @@ def tag_and_push(tag_name, commit_hash):
        print(colorize(f"Successfully tagged commit {commit_hash} with {tag_name}", 36))
        print("Tag pushed to remote.")
 
-def deployment_process(selected_tag, original_branch, permissions):
-   branch_output = subprocess.run("git branch", shell=True, capture_output=True, text=True).stdout
-   branches = branch_output.splitlines()
-   selected_branch = select_item(branches, colorize("\nChoose a branch to deploy to:", 43))
-   if selected_branch:
-       if check_branch_permissions(selected_branch, permissions):
-           deploy_to_branch(selected_branch, selected_tag, branches, original_branch)
+def deployment_process(selected_tag, original_branch, permissions, selected_branch):
+   deploy_to_branch(selected_tag, original_branch, selected_branch)
 
 def deploy_to_branch(selected_branch, selected_tag, branches, original_branch):
    selected_branch = selected_branch.replace('*', '').strip()
