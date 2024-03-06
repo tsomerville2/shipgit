@@ -250,7 +250,12 @@ def deploying_workflow():
    selected_tag = select_item(tags, colorize("\nChoose a tag to deploy:", 41))
    original_branch = subprocess.run("git branch --show-current", shell=True, capture_output=True, text=True).stdout.strip()
    if selected_tag:
-       deployment_process(selected_tag, original_branch)
+       permissions_file = 'permissions.shipgit'
+       permissions = check_permissions_file(permissions_file)
+       if permissions:
+           deployment_process(selected_tag, original_branch, permissions)
+       else:
+           print("Error: Unable to read permissions file.")
 
 def select_item(items, message):
     print(f"{message}")
@@ -290,12 +295,13 @@ def tag_and_push(tag_name, commit_hash):
        print(colorize(f"Successfully tagged commit {commit_hash} with {tag_name}", 36))
        print("Tag pushed to remote.")
 
-def deployment_process(selected_tag, original_branch):
+def deployment_process(selected_tag, original_branch, permissions):
    branch_output = subprocess.run("git branch", shell=True, capture_output=True, text=True).stdout
    branches = branch_output.splitlines()
-   selected_branch = select_item_or_create_new(branches, colorize("\nChoose a branch to deploy to:", 43), "branch")
+   selected_branch = select_item(branches, colorize("\nChoose a branch to deploy to:", 43))
    if selected_branch:
-       deploy_to_branch(selected_branch, selected_tag, branches, original_branch)
+       if check_branch_permissions(selected_branch, permissions):
+           deploy_to_branch(selected_branch, selected_tag, branches, original_branch)
 
 def deploy_to_branch(selected_branch, selected_tag, branches, original_branch):
    selected_branch = selected_branch.replace('*', '').strip()
@@ -337,3 +343,15 @@ if __name__ == "__main__":
     #     print(f"\033[{i}mColor {i}\033[0m")def list_branches():
 
 
+def check_branch_permissions(branch, permissions):
+    branch_permissions = permissions['branches'].get(branch.strip('* ').strip(), [])
+    if not branch_permissions:
+        print("All users are allowed to perform operations on this branch.")
+        return True
+    github_username = get_github_username()
+    if github_username in branch_permissions:
+        print(f"Users with access to branch '{branch}': {', '.join(branch_permissions)}")
+        return True
+    else:
+        print(f"Denied: User '{github_username}' does not have permission to perform operations on branch '{branch}'.")
+        return False
