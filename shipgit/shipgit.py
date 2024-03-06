@@ -316,9 +316,10 @@ def tag_and_push(tag_name, commit_hash):
        print("Tag pushed to remote.")
 
 def deployment_process(selected_tag, original_branch, permissions, selected_branch):
-   deploy_to_branch(selected_tag, original_branch, selected_branch)
+   branches = list_branches()
+   deploy_to_branch(selected_tag, branches, selected_branch, original_branch)
 
-def deploy_to_branch(selected_branch, selected_tag, branches, original_branch):
+def deploy_to_branch(selected_tag, branches, selected_branch, original_branch):
    selected_branch = selected_branch.replace('*', '').strip()
    print(colorize(f"\nSelected branch: {selected_branch}\n", 36))
    branch_exists = selected_branch.strip('* ').strip() in [branch.strip('* ').strip() for branch in branches]
