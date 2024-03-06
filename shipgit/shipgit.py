@@ -62,6 +62,7 @@ def permissions_workflow():
                     github_username = get_github_username()
                     if github_username:
                         print(f"Your GitHub username is: {colorize(github_username, 36)}")
+                        manage_user_permissions(permissions, selected_branch, github_username, permissions_file)
                     else:
                         print("GitHub username not found in local git config.")
                 else:
@@ -73,6 +74,43 @@ def permissions_workflow():
         # Further processing can be done here as needed
     else:
         print("Permissions file not found or invalid.")
+
+def manage_user_permissions(permissions, branch, username, file_path):
+    while True:
+        print("\nPermission Management Options:")
+        print(colorize("1) Add my username to the list", 36))
+        print(colorize("2) Add my username and remove all others", 36))
+        print(colorize("3) Remove all users", 36))
+        print(colorize("4) Remove a single username", 36))
+        print(colorize("5) Exit permission management", 36))
+        choice = input("Select an option (1-5): ")
+        if choice == '1':
+            if username not in permissions['branches'][branch]:
+                permissions['branches'][branch].append(username)
+                update_permissions_file(permissions, branch, file_path)
+                print(f"Added '{username}' to branch '{branch}'.")
+            else:
+                print(f"'{username}' already has access to branch '{branch}'.")
+        elif choice == '2':
+            permissions['branches'][branch] = [username]
+            update_permissions_file(permissions, branch, file_path)
+            print(f"Set '{username}' as the only user with access to branch '{branch}'.")
+        elif choice == '3':
+            permissions['branches'][branch] = []
+            update_permissions_file(permissions, branch, file_path)
+            print(f"Removed all users from branch '{branch}'.")
+        elif choice == '4':
+            user_to_remove = input("Enter the username to remove: ")
+            if user_to_remove in permissions['branches'][branch]:
+                permissions['branches'][branch].remove(user_to_remove)
+                update_permissions_file(permissions, branch, file_path)
+                print(f"Removed '{user_to_remove}' from branch '{branch}'.")
+            else:
+                print(f"'{user_to_remove}' does not have access to branch '{branch}'.")
+        elif choice == '5':
+            break
+        else:
+            print("Invalid choice. Please select an option from 1 to 5.")
 
 def get_github_username():
     command = "git config user.name"
