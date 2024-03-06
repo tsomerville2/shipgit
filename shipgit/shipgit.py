@@ -346,10 +346,15 @@ def deploy_to_branch(selected_tag, branches, selected_branch, original_branch):
 
 
 def deploy_tag(tag, branch):
-   default_remote_branch = get_default_remote_branch()
-   subprocess.run(f"git pull origin {default_remote_branch}", shell=True, check=True)
-   subprocess.run(f"git fetch origin --tags", shell=True, check=True)
-   subprocess.run(f"git merge tags/{tag}", shell=True, check=True)
+   # Ensure we do not deploy to the default remote branch
+   if branch == get_default_remote_branch():
+       print(f"Error: Deployment to the default remote branch '{branch}' is not allowed.")
+       return
+   # Forcefully overwrite the branch with the tag
+   subprocess.run(f"git fetch --tags", shell=True, check=True)
+   subprocess.run(f"git checkout {branch}", shell=True, check=True)
+   subprocess.run(f"git reset --hard tags/{tag}", shell=True, check=True)
+   subprocess.run(f"git push --force origin {branch}", shell=True, check=True)
    subprocess.run(f"git push --force origin {branch}", shell=True, check=True)
    print(colorize("Deployment complete!", 36))
 
