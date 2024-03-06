@@ -36,9 +36,9 @@ def commit_and_push_changes(file_path, commit_message):
     if status_result.stdout.strip() == "":
         print(colorize("No changes to commit.", 36))
         return
-    subprocess.run(f"git add {file_path}", shell=True, check=True)
-    subprocess.run(f'git commit -m "{commit_message}"', shell=True, check=True)
-    subprocess.run("git push", shell=True, check=True)
+    subprocess.run(f"git add {file_path}", shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run(f'git commit -m "{commit_message}"', shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run("git push", shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     print(colorize("Changes to permissions have been committed and pushed to the repository.", 36))
 
 def check_branch_permissions(branch, permissions):
