@@ -45,9 +45,8 @@ def check_branch_permissions(branch, permissions):
     branch_permissions = permissions['branches'].get(branch.strip('* ').strip())
     if branch_permissions is None or len(branch_permissions) == 0:
         print("Please setup Permissions for at least 1 GitHub user to deploy to this branch.")
-        return False
-        print("Please setup Permissions for at least 1 github user to deploy to this branch.")
-        return False
+        permissions_workflow()
+
     github_username = get_github_username()
     if github_username in branch_permissions:
         print(f"Users with access to branch '{branch}': {', '.join(branch_permissions)}")
