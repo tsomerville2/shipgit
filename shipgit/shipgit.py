@@ -253,7 +253,6 @@ def deploying_workflow():
        permissions_file = 'permissions.shipgit'
        permissions = check_permissions_file(permissions_file)
        if permissions:
-           check_branch_permissions = check_branch_permissions
            deployment_process(selected_tag, original_branch, permissions)
        else:
            print("Error: Unable to read permissions file.")
