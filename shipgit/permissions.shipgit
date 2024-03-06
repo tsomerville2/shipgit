@@ -1,9 +1,6 @@
 {
     "branches": {
-        "dev1": [
-            "tsomerville2",
-            "david"
-        ],
+        "dev1": [],
         "master": [
             "tsomerville2"
         ]
