@@ -355,7 +355,6 @@ def deploy_tag(tag, branch):
    subprocess.run(f"git checkout {branch}", shell=True, check=True)
    subprocess.run(f"git reset --hard tags/{tag}", shell=True, check=True)
    subprocess.run(f"git push --force origin {branch}", shell=True, check=True)
-   subprocess.run(f"git push --force origin {branch}", shell=True, check=True)
    print(colorize("Deployment complete!", 36))
 
 if __name__ == "__main__":
