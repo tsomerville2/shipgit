@@ -165,6 +165,7 @@ def update_permissions_file(permissions, branch, file_path):
         json.dump(permissions, file, indent=4)
     print(f"Added branch '{branch}' to permissions.")
     return permissions
+
 def check_permissions_file(file_path):
     try:
         with open(file_path, 'r') as file:
@@ -182,6 +183,7 @@ def create_default_permissions(file_path):
         json.dump(default_permissions, file, indent=4)
     print(f"Created default permissions file with default structure at {file_path}.")
     return default_permissions
+
 def parse_permissions(json_data):
     import json
     try:
