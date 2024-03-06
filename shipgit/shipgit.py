@@ -79,6 +79,7 @@ def manage_user_permissions(permissions, branch, username, file_path):
     while True:
         print("\nPermission Management Options:")
         print(colorize("1) Add my username to the list", 36))
+        print(colorize("2) Add a specific username to the list", 36))
         print(colorize("2) Add my username and remove all others", 36))
         print(colorize("3) Remove all users", 36))
         print(colorize("4) Remove a single username", 36))
@@ -92,7 +93,20 @@ def manage_user_permissions(permissions, branch, username, file_path):
             else:
                 print(f"'{username}' already has access to branch '{branch}'.")
         elif choice == '2':
-            permissions['branches'][branch] = [username]
+            specific_username = input("Enter the specific username to add: ").strip()
+            if specific_username and specific_username not in permissions['branches'][branch]:
+                permissions['branches'][branch].append(specific_username)
+                update_permissions_file(permissions, branch, file_path)
+                print(f"Added '{specific_username}' to branch '{branch}'.")
+            elif specific_username:
+                print(f"'{specific_username}' already has access to branch '{branch}'.")
+            else:
+                print("No username entered.")
+        elif choice == '2':
+            if username not in permissions['branches'][branch]:
+                permissions['branches'][branch].append(username)
+            else:
+                permissions['branches'][branch] = [username]
             update_permissions_file(permissions, branch, file_path)
             print(f"Set '{username}' as the only user with access to branch '{branch}'.")
         elif choice == '3':
@@ -107,7 +121,7 @@ def manage_user_permissions(permissions, branch, username, file_path):
                 print(f"Removed '{user_to_remove}' from branch '{branch}'.")
             else:
                 print(f"'{user_to_remove}' does not have access to branch '{branch}'.")
-        elif choice == '5':
+        elif choice == '6':
             main_menu()
         else:
             print("Invalid choice. Please select an option from 1 to 5.")
