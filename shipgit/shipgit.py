@@ -346,6 +346,7 @@ def deploy_to_branch(selected_tag, branches, selected_branch, original_branch):
     subprocess.run(f"git checkout {original_branch}", shell=True, check=True)
     subprocess.run("git stash pop", shell=True, check=True)
     print(f"Returned to original branch: {original_branch}\nDeployment complete!")
+    main_menu()  # Return to the main menu after deployment is complete
 
 def deploy_tag(tag, branch):
     # Ensure the local repo is aware of all remote tags
