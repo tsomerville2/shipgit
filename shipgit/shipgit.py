@@ -108,7 +108,7 @@ def manage_user_permissions(permissions, branch, username, file_path):
             else:
                 print(f"'{user_to_remove}' does not have access to branch '{branch}'.")
         elif choice == '5':
-            break
+            main_menu()
         else:
             print("Invalid choice. Please select an option from 1 to 5.")
 
