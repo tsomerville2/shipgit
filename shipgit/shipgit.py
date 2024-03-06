@@ -42,8 +42,8 @@ def commit_and_push_changes(file_path, commit_message):
     print(colorize("Changes to permissions have been committed and pushed to the repository.", 36))
 
 def check_branch_permissions(branch, permissions):
-    branch_permissions = permissions['branches'].get(branch.strip('* ').strip(), [])
-    if not branch_permissions:
+    branch_permissions = permissions['branches'].get(branch.strip('* ').strip())
+    if branch_permissions is None or not branch_permissions:
         print("All users are allowed to perform operations on this branch.")
         return True
     github_username = get_github_username()
