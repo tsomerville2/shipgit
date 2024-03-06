@@ -79,12 +79,16 @@ def manage_user_permissions(permissions, branch, username, file_path):
     while True:
         print("\nPermission Management Options:")
         print(colorize("1) Add my username to the list", 36))
-        print(colorize("2) Add a specific username to the list", 36))
         print(colorize("2) Add my username and remove all others", 36))
         print(colorize("3) Remove all users", 36))
         print(colorize("4) Remove a single username", 36))
         print(colorize("5) Exit permission management", 36))
         choice = input("Select an option (1-5): ")
+        print(colorize("3) Add a specific username to the list", 36))
+        print(colorize("4) Remove all users", 36))
+        print(colorize("5) Remove a single username", 36))
+        print(colorize("6) Exit permission management", 36))
+        choice = input("Select an option (1-6): ")
         if choice == '1':
             if username not in permissions['branches'][branch]:
                 permissions['branches'][branch].append(username)
@@ -92,7 +96,7 @@ def manage_user_permissions(permissions, branch, username, file_path):
                 print(f"Added '{username}' to branch '{branch}'.")
             else:
                 print(f"'{username}' already has access to branch '{branch}'.")
-        elif choice == '2':
+        elif choice == '3':
             specific_username = input("Enter the specific username to add: ").strip()
             if specific_username and specific_username not in permissions['branches'][branch]:
                 permissions['branches'][branch].append(specific_username)
@@ -109,6 +113,11 @@ def manage_user_permissions(permissions, branch, username, file_path):
                 permissions['branches'][branch] = [username]
             update_permissions_file(permissions, branch, file_path)
             print(f"Set '{username}' as the only user with access to branch '{branch}'.")
+        elif choice == '4':
+            permissions['branches'][branch] = []
+            update_permissions_file(permissions, branch, file_path)
+            print(f"Removed all users from branch '{branch}'.")
+        elif choice == '5':
         elif choice == '3':
             permissions['branches'][branch] = []
             update_permissions_file(permissions, branch, file_path)
@@ -124,6 +133,7 @@ def manage_user_permissions(permissions, branch, username, file_path):
         elif choice == '6':
             main_menu()
         else:
+            print("Invalid choice. Please select an option from 1 to 6.")
             print("Invalid choice. Please select an option from 1 to 5.")
 
 def get_github_username():
