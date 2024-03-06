@@ -44,8 +44,8 @@ def commit_and_push_changes(file_path, commit_message):
 def check_branch_permissions(branch, permissions):
     branch_permissions = permissions['branches'].get(branch.strip('* ').strip())
     if branch_permissions is None or not branch_permissions:
-        print("All users are allowed to perform operations on this branch.")
-        return True
+        print("Please setup Permissions for at least 1 github user to deploy to this branch.")
+        return False
     github_username = get_github_username()
     if github_username in branch_permissions:
         print(f"Users with access to branch '{branch}': {', '.join(branch_permissions)}")
