@@ -164,6 +164,7 @@ def update_permissions_file(permissions, branch, file_path):
     with open(file_path, 'w') as file:
         json.dump(permissions, file, indent=4)
     print(f"Added branch '{branch}' to permissions.")
+    commit_and_push_changes(file_path, f"Update permissions for branch '{branch}'")
     return permissions
 
 def check_permissions_file(file_path):
@@ -366,3 +367,8 @@ if __name__ == "__main__":
     #     print(f"\033[{i}mColor {i}\033[0m")def list_branches():
 
 
+def commit_and_push_changes(file_path, commit_message):
+    subprocess.run(f"git add {file_path}", shell=True, check=True)
+    subprocess.run(f'git commit -m "{commit_message}"', shell=True, check=True)
+    subprocess.run("git push", shell=True, check=True)
+    print(colorize("Changes to permissions have been committed and pushed to the repository.", 36))
