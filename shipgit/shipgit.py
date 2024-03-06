@@ -30,6 +30,12 @@ def main_menu():
         print("Invalid choice. Please select 1, 2, or 3.")
         main_menu()
 
+def commit_and_push_changes(file_path, commit_message):
+    subprocess.run(f"git add {file_path}", shell=True, check=True)
+    subprocess.run(f'git commit -m "{commit_message}"', shell=True, check=True)
+    subprocess.run("git push", shell=True, check=True)
+    print(colorize("Changes to permissions have been committed and pushed to the repository.", 36))
+
 def check_branch_permissions(branch, permissions):
     branch_permissions = permissions['branches'].get(branch.strip('* ').strip(), [])
     if not branch_permissions:
@@ -366,9 +372,3 @@ if __name__ == "__main__":
     # for i in range(30, 108):
     #     print(f"\033[{i}mColor {i}\033[0m")def list_branches():
 
-
-def commit_and_push_changes(file_path, commit_message):
-    subprocess.run(f"git add {file_path}", shell=True, check=True)
-    subprocess.run(f'git commit -m "{commit_message}"', shell=True, check=True)
-    subprocess.run("git push", shell=True, check=True)
-    print(colorize("Changes to permissions have been committed and pushed to the repository.", 36))
