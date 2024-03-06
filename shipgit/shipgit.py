@@ -259,22 +259,22 @@ def get_default_remote_branch():
    return result.stdout.strip()
 
 def deploying_workflow():
-   original_branch = subprocess.run("git branch --show-current", shell=True, capture_output=True, text=True).stdout.strip()
-       permissions_file = 'permissions.shipgit'
-       permissions = check_permissions_file(permissions_file)
-       if permissions:
-           branch_output = subprocess.run("git branch", shell=True, capture_output=True, text=True).stdout
-           branches = branch_output.splitlines()
-           selected_branch = select_item(branches, colorize("\nChoose a branch to deploy to:", 43))
-           if selected_branch and check_branch_permissions(selected_branch, permissions):
-               tags = get_last_tags()
-               selected_tag = select_item(tags, colorize("\nChoose a tag to deploy:", 41))
-               if selected_tag:
-                   deployment_process(selected_tag, original_branch, permissions, selected_branch)
-           if check_branch_permissions(selected_branch, permissions):
-               deployment_process(selected_tag, original_branch, permissions)
-       else:
-           print("Error: Unable to read permissions file.")
+    original_branch = subprocess.run("git branch --show-current", shell=True, capture_output=True, text=True).stdout.strip()
+    permissions_file = 'permissions.shipgit'
+    permissions = check_permissions_file(permissions_file)
+    if permissions:
+        branch_output = subprocess.run("git branch", shell=True, capture_output=True, text=True).stdout
+        branches = branch_output.splitlines()
+        selected_branch = select_item(branches, colorize("\nChoose a branch to deploy to:", 43))
+        if selected_branch and check_branch_permissions(selected_branch, permissions):
+            tags = get_last_tags()
+            selected_tag = select_item(tags, colorize("\nChoose a tag to deploy:", 41))
+            if selected_tag:
+                deployment_process(selected_tag, original_branch, permissions, selected_branch)
+        if check_branch_permissions(selected_branch, permissions):
+            deployment_process(selected_tag, original_branch, permissions)
+    else:
+        print("Error: Unable to read permissions file.")
 
 def select_item(items, message):
     print(f"{message}")
