@@ -244,7 +244,7 @@ def select_commit(commits):
        print("No commits found matching your search phrase.")
        return None
    print("Commits matching your search:")
-   for i, (commit_hash, message, tags) in enumerate(commits[:20]):
+   for i, (commit_hash, message, tags) in enumerate(commits[:200]):
        tag_str = "TAG:>>> " + ", ".join(tags) + " <<<" if tags else ""
        tag_str = colorize(tag_str, 42)  # Green color code
        print(colorize(f"{chr(ord('a') + i)}) {tag_str} {commit_hash} - {message}", 36))  # Cyan color code
