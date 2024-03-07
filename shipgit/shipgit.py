@@ -308,7 +308,7 @@ def deploying_workflow():
     if permissions:
         branch_output = subprocess.run("git branch", shell=True, capture_output=True, text=True).stdout
         branches = branch_output.splitlines()
-        selected_branch = select_item(branches, colorize("\nChoose a branch to deploy to:", 43))
+        selected_branch = select_item(branches, colorize("\nChoose a branch to deploy to:", 43), allow_creation=True)
         if selected_branch and check_branch_permissions(selected_branch, permissions):
             tags = get_last_tags()
             selected_tag = select_item(tags, colorize("\nChoose a tag to deploy:", 41))
@@ -317,11 +317,11 @@ def deploying_workflow():
     else:
         print("Error: Unable to read permissions file.")
 
-def select_item(items, message):
+def select_item(items, message, allow_creation=False):
     print(f"{message}")
     for i, item in enumerate(items):
         print(colorize(f"{chr(ord('a') + i)}) {item}", 35))  # Green color code
-    return user_choice(items)
+    return user_choice(items, allow_creation=allow_creation)
 
 # select one of the previously committed git commits
 def user_choice_of_commit_by_number(commits):
@@ -337,11 +337,13 @@ def user_choice_of_commit_by_number(commits):
         except ValueError:
             print("Invalid input, please enter a number.")
 
-def user_choice(commits, create_prompt=None):
+def user_choice(items, create_prompt=None, allow_creation=False):
    while True:
        choice = input("Select an item (a, b, c, ..., or z for new): ").lower()
        if choice >= 'a' and choice <= chr(ord('a') + len(commits) - 1):
-           return commits[ord(choice) - ord('a')].lstrip('* ')
+           return items[ord(choice) - ord('a')].lstrip('* ')
+       elif allow_creation and choice == 'z':
+           return input(f"Enter a new {create_prompt} name: ")
        elif create_prompt and choice == 'z':
            return input(f"Enter a new {create_prompt} name: ")
        else:
