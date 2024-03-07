@@ -35,6 +35,7 @@ def main_menu():
     print(colorize("1) TAGGING", 46))
     print(colorize("2) DEPLOYING", 41))
     print(colorize("3) PERMISSIONS", 44))
+    print(colorize("4) EXIT", 45))
     choice = input(colorize("Enter your choice (1, 2, or 3): ", 100))  # Correct the input prompt
     if choice == '1':
         tagging_workflow()
@@ -42,6 +43,8 @@ def main_menu():
         deploying_workflow()
     elif choice == '3':
         permissions_workflow()
+    elif choice == '4':
+        exit()
     else:
         print("Invalid choice. Please select 1, 2, or 3.")
         main_menu()
