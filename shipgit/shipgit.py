@@ -252,7 +252,7 @@ def select_commit(commits):
         print("No commits found matching your search phrase.")
         return None
     print("Commits matching your search:")
-    current_commit = subprocess.run("git rev-parse HEAD", shell=True, capture_output=True, text=True).stdout.strip()
+    current_commit = subprocess.run("git rev-parse HEAD", shell=True, capture_output=True, text=True).stdout.strip()[:7]
     for i, (commit_hash, message, tags) in enumerate(commits[:200], start=1):
         tag_str = "TAG:>>> " + ", ".join(tags) + " <<<" if tags else ""
         tag_str = colorize(tag_str, 42)  # Green color code
