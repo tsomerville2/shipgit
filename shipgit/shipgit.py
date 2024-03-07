@@ -299,6 +299,13 @@ def select_item_or_create_new(items, message, create_prompt):
    print(colorize(f"z) Create a new {create_prompt}", 32))  # Yellow color code
    return user_choice(items, create_prompt, True)
 
+def select_item_or_create_new_branch(items, message, create_prompt):
+   print(f"{message}")
+   for i, item in enumerate(items):
+       print(colorize(f"{chr(ord('a') + i)}) {item}", 33))  # Green color code
+   print(colorize(f"z) Create a new {create_prompt}", 32))  # Yellow color code
+   return user_choice_tuple(items, create_prompt, True)
+
 def get_default_remote_branch():
    command = "git remote show origin | grep 'HEAD branch' | cut -d' ' -f5"
    result = subprocess.run(command, shell=True, capture_output=True, text=True)
@@ -313,7 +320,7 @@ def deploying_workflow():
     if permissions:
         branch_output = subprocess.run("git branch", shell=True, capture_output=True, text=True).stdout
         branches = branch_output.splitlines()
-        selected_branch, wants_to_create_new = select_item_or_create_new(branches, colorize("\nChoose a branch to deploy to:", 43), "branch")
+        selected_branch, wants_to_create_new = select_item_or_create_new_branch(branches, colorize("\nChoose a branch to deploy to:", 43), "branch")
         if wants_to_create_new:  # If the user chose to create a new branch make the new branch
             subprocess.run(f"git branch {selected_branch}", shell=True, check=True)
             print(f"New branch '{selected_branch}' created.")
@@ -348,7 +355,7 @@ def user_choice_of_commit_by_number(commits):
         except ValueError:
             print("Invalid input, please enter a number.")
 
-def user_choice(items, create_prompt=None, allow_creation=True):
+def user_choice_tuple(items, create_prompt=None, allow_creation=True):
     while True:
         choice = input("Select an item (a, b, c, ..., or z for new): ").lower()
         if choice >= 'a' and choice <= chr(ord('a') + len(items) - 1):
@@ -356,6 +363,17 @@ def user_choice(items, create_prompt=None, allow_creation=True):
         elif allow_creation and choice == 'z':
             new_item = input(f"Enter a new {create_prompt} name: ")
             return new_item, True
+        else:
+            print("Invalid choice. Please try again.")
+
+def user_choice(items, create_prompt=None, allow_creation=True):
+    while True:
+        choice = input("Select an item (a, b, c, ..., or z for new): ").lower()
+        if choice >= 'a' and choice <= chr(ord('a') + len(items) - 1):
+            return items[ord(choice) - ord('a')].lstrip('* ')
+        elif allow_creation and choice == 'z':
+            new_item = input(f"Enter a new {create_prompt} name: ")
+            return new_item
         else:
             print("Invalid choice. Please try again.")
 
