@@ -276,7 +276,7 @@ def parse_permissions(json_data):
         return None
 
 def find_commits_by_phrase(search_phrase):
-   command = f"git log --grep='{search_phrase}' --oneline"
+   command = f"git log --oneline"
    result = subprocess.run(command, shell=True, capture_output=True, text=True)
    if result.returncode != 0:
        print(f"Error searching for commits: {result.stderr}")
@@ -284,15 +284,16 @@ def find_commits_by_phrase(search_phrase):
    commits = []
    for line in result.stdout.splitlines():
        commit_hash, message = line.split(' ', 1)
-       tags = get_tags_for_commit(commit_hash)
+       tags = get_tags_for_commit(commit_hash, search_phrase)
        commits.append((commit_hash, message, tags))
    return commits
 
-def get_tags_for_commit(commit_hash):
+def get_tags_for_commit(commit_hash, search_phrase):
    command = f"git tag --points-at {commit_hash}"
    result = subprocess.run(command, shell=True, capture_output=True, text=True)
    if result.stdout:
-       return result.stdout.strip().split('\n')
+       tags = result.stdout.strip().split('\n')
+       return [tag for tag in tags if search_phrase.lower() in tag.lower()]
    else:
        return []
 
