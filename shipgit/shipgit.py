@@ -11,8 +11,9 @@ import subprocess
 def colorize(text, color_code):
     return f"\033[{color_code}m{text}\033[0m"
 
-def main_menu():
-    print(colorize("""
+def main_menu(firsttime=False):
+    if firsttime:
+        print(colorize("""
 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 ░░      ░░░  ░░░░  ░░        ░░       ░░░░░░░░░░      ░░░        ░░        ░
 ▒  ▒▒▒▒▒▒▒▒  ▒▒▒▒  ▒▒▒▒▒  ▒▒▒▒▒  ▒▒▒▒  ▒▒▒▒▒▒▒▒  ▒▒▒▒▒▒▒▒▒▒▒  ▒▒▒▒▒▒▒▒  ▒▒▒▒
@@ -22,21 +23,22 @@ def main_menu():
 ████████████████████████████████████████████████████████████████████████████ 
 ░░░ CREATED BY TRAVIS SOMERVILLE ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░                                    
     """, 32))  # Ensure the ASCII art string is properly terminated
- 
+    else:
+        print("")
 
     branch = subprocess.run("git branch --show-current", shell=True, capture_output=True, text=True).stdout.strip()
     commit = subprocess.run("git rev-parse --short HEAD", shell=True, capture_output=True, text=True).stdout.strip()
     tag = subprocess.run(f"git describe --tags {commit}", shell=True, capture_output=True, text=True).stdout.strip()
     tag = tag if tag else "No tag"
-    info = f"Branch: {branch}    Commit: {commit}    TAG: {tag}"
-    print(colorize(info, 36))  # Cyan color code
+    info = f"CURRENT: Branch: {branch}    Commit: {commit}    TAG: {tag}"
+    print(colorize(info, 43)) 
 
     print(colorize("Select an operation:", 100))
     print(colorize("1) TAGGING", 46))
     print(colorize("2) DEPLOYING", 41))
     print(colorize("3) PERMISSIONS", 44))
-    print(colorize("4) EXIT", 45))
-    print(colorize("5) INFO", 47))
+    print(colorize("4) INFO", 45))
+    print(colorize("5) EXIT", 47))
     choice = input(colorize("Enter your choice (1, 2, 3, 4, or 5): ", 100))  # Correct the input prompt
     if choice == '1':
         tagging_workflow()
@@ -44,18 +46,23 @@ def main_menu():
         deploying_workflow()
     elif choice == '3':
         permissions_workflow()
-    elif choice == '5':
-        exit()
     elif choice == '4':
         info_workflow()
+    elif choice == '5':
+        exit()
     else:
         print("Invalid choice. Please select 1, 2, 3, 4, or 5.")
         main_menu()
 
 def info_workflow():
     branches = list_branches()
+    header = "=" * 86
+    print(colorize(header, 36))
     for branch in branches:
         print_branch_info(branch)
+    
+    print(colorize(header, 36))
+
     main_menu()
 
 def print_branch_info(branch):
@@ -63,7 +70,8 @@ def print_branch_info(branch):
     commit = subprocess.run(f"git rev-parse --short {branch}", shell=True, capture_output=True, text=True).stdout.strip()
     tag = subprocess.run(f"git describe --tags {commit}", shell=True, capture_output=True, text=True).stdout.strip()
     tag = tag if tag else "No tag"
-    info = f"Branch: {branch}    Commit: {commit}    TAG: {tag}"
+    info = f"| Branch: {branch:<15} | Commit: {commit:<10} | TAG: {tag[:30].ljust(30)} |"
+    #print(f"{info:^60}")
     print(colorize(info, 36))  # Cyan color code
 
 def commit_and_push_changes(file_path, commit_message):
@@ -293,27 +301,15 @@ def tagging_workflow():
     search_phrase = input("Enter your commit search phrase (or just press enter to see last 200): ")
     commits = find_commits_by_phrase(search_phrase)
     selected_hash = select_commit(commits)
+    
+    if selected_hash == None:
+        main_menu()
+
     if selected_hash:
         success = tag_commit(selected_hash)
         if not success:
             print("Tagging process failed. Returning to main menu.")
             main_menu()
-
-def info_workflow():
-    branches = list_branches()
-    for branch in branches:
-        print_branch_info(branch)
-    main_menu()
-
-def print_branch_info(branch):
-    branch = branch.strip('* ').strip()
-    commit = subprocess.run(f"git rev-parse --short {branch}", shell=True, capture_output=True, text=True).stdout.strip()
-    tag = subprocess.run(f"git describe --tags {commit}", shell=True, capture_output=True, text=True).stdout.strip()
-    tag = tag if tag else "No tag"
-    info = f"Branch: {branch}    Commit: {commit}    TAG: {tag}"
-    print(colorize(info, 36))  # Cyan color code
-
-    main_menu()
 
 def get_last_tags(limit=20):
     command = f"git tag --sort=-creatordate | head -n {limit}"
@@ -479,7 +475,7 @@ def deploy_tag(tag, branch):
     print(colorize("Deployment to branch complete! Branch is now at the state of the tag.", 36))
 
 if __name__ == "__main__":
-   main_menu()
+   main_menu(True)
     #show all colors for colorize
     # for i in range(30, 108):
     #     print(f"\033[{i}mColor {i}\033[0m")def list_branches():
