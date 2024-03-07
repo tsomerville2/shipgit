@@ -260,7 +260,7 @@ def tagging_workflow():
     print()
     you_chose_tagging = colorize("TAGGING Chosen", 46)
     print(you_chose_tagging)
-    search_phrase = input("Enter your commit search phrase (or just press enter to see last 20): ")
+    search_phrase = input("Enter your commit search phrase (or just press enter to see last 200): ")
     commits = find_commits_by_phrase(search_phrase)
     selected_hash = select_commit(commits)
     if selected_hash:
