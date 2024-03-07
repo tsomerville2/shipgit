@@ -7,9 +7,6 @@
         "dev2": [
             "somebodyelse"
         ],
-        "master": [
-            "somebody",
-            "tsomerville2"
-        ]
+        "master": []
     }
 }
