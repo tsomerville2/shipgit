@@ -4,9 +4,9 @@
             "tsomerville2",
             "davie jones"
         ],
-        "master": [],
         "dev2": [
             "tsomerville2"
-        ]
+        ],
+        "master": []
     }
 }
