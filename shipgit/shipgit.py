@@ -36,18 +36,35 @@ def main_menu():
     print(colorize("2) DEPLOYING", 41))
     print(colorize("3) PERMISSIONS", 44))
     print(colorize("4) EXIT", 45))
-    choice = input(colorize("Enter your choice (1, 2, or 3): ", 100))  # Correct the input prompt
+    print(colorize("5) INFO", 47))
+    choice = input(colorize("Enter your choice (1, 2, 3, 4, or 5): ", 100))  # Correct the input prompt
     if choice == '1':
         tagging_workflow()
     elif choice == '2':
         deploying_workflow()
     elif choice == '3':
         permissions_workflow()
-    elif choice == '4':
+    elif choice == '5':
         exit()
+    elif choice == '4':
+        info_workflow()
     else:
-        print("Invalid choice. Please select 1, 2, or 3.")
+        print("Invalid choice. Please select 1, 2, 3, 4, or 5.")
         main_menu()
+
+def info_workflow():
+    branches = list_branches()
+    for branch in branches:
+        print_branch_info(branch)
+    main_menu()
+
+def print_branch_info(branch):
+    branch = branch.strip('* ').strip()
+    commit = subprocess.run(f"git rev-parse --short {branch}", shell=True, capture_output=True, text=True).stdout.strip()
+    tag = subprocess.run(f"git describe --tags {commit}", shell=True, capture_output=True, text=True).stdout.strip()
+    tag = tag if tag else "No tag"
+    info = f"Branch: {branch}    Commit: {commit}    TAG: {tag}"
+    print(colorize(info, 36))  # Cyan color code
 
 def commit_and_push_changes(file_path, commit_message):
     # Check if there are changes to commit
@@ -281,6 +298,20 @@ def tagging_workflow():
         if not success:
             print("Tagging process failed. Returning to main menu.")
             main_menu()
+
+def info_workflow():
+    branches = list_branches()
+    for branch in branches:
+        print_branch_info(branch)
+    main_menu()
+
+def print_branch_info(branch):
+    branch = branch.strip('* ').strip()
+    commit = subprocess.run(f"git rev-parse --short {branch}", shell=True, capture_output=True, text=True).stdout.strip()
+    tag = subprocess.run(f"git describe --tags {commit}", shell=True, capture_output=True, text=True).stdout.strip()
+    tag = tag if tag else "No tag"
+    info = f"Branch: {branch}    Commit: {commit}    TAG: {tag}"
+    print(colorize(info, 36))  # Cyan color code
 
     main_menu()
 
