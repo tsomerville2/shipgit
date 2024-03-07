@@ -340,7 +340,7 @@ def user_choice_of_commit_by_number(commits):
 def user_choice(items, create_prompt=None, allow_creation=False):
    while True:
        choice = input("Select an item (a, b, c, ..., or z for new): ").lower()
-       if choice >= 'a' and choice <= chr(ord('a') + len(commits) - 1):
+       if choice >= 'a' and choice <= chr(ord('a') + len(items) - 1):
            return items[ord(choice) - ord('a')].lstrip('* ')
        elif allow_creation and choice == 'z':
            return input(f"Enter a new {create_prompt} name: ")
