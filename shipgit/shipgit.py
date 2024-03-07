@@ -121,6 +121,7 @@ def permissions_workflow():
     permissions = check_permissions_file(permissions_file)
     if permissions:
         print("Permissions file found and loaded.")
+        print_permissions_grid(permissions)
         branches = list_branches()
         if branches:
             print("Available branches:")
@@ -148,6 +149,15 @@ def permissions_workflow():
         # Further processing can be done here as needed
     else:
         print("Permissions file not found or invalid.")
+
+def print_permissions_grid(permissions):
+    header = colorize(f"{'Branch':<20} | {'Users with Access':<50}", 43)
+    print(header)
+    print(colorize('-' * len(header), 43))
+    for branch, users in permissions['branches'].items():
+        users_str = ', '.join(users)
+        print(f"{branch:<20} | {users_str:<50}")
+    print()
 
 def manage_user_permissions(permissions, branch, username, file_path):
     while True:
@@ -479,4 +489,3 @@ if __name__ == "__main__":
     #show all colors for colorize
     # for i in range(30, 108):
     #     print(f"\033[{i}mColor {i}\033[0m")def list_branches():
-
