@@ -55,7 +55,7 @@ def commit_and_push_changes(file_path, commit_message):
     subprocess.run(f"git add {file_path}", shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     commit_result = subprocess.run(f'git commit -m "{commit_message}"', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     if commit_result.returncode != 0:
-        print(colorize(f"Failed to commit changes: {commit_result.stderr}", 31))
+        #print(colorize(f"Failed to commit changes: {commit_result.stderr}", 31))
         return False
     subprocess.run("git push", shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     print(colorize("Changes to permissions have been committed and pushed to the repository.", 36))
@@ -193,9 +193,9 @@ def list_users_with_access(permissions, branch):
 def update_permissions_file(permissions, branch, file_path):
     if branch not in permissions['branches']:
         permissions['branches'][branch] = []
+        print(f"Added branch '{branch}' to permissions.")
     with open(file_path, 'w') as file:
         json.dump(permissions, file, indent=4)
-    print(f"Added branch '{branch}' to permissions.")
     commit_and_push_changes(file_path, f"Update permissions for branch '{branch}'")
     return permissions
 
@@ -312,7 +312,7 @@ def deploying_workflow():
         if wants_to_create_new:  # If the user chose to create a new branch make the new branch
             subprocess.run(f"git branch {selected_branch}", shell=True, check=True)
             print(f"New branch '{selected_branch}' created.")
-            permissions['branches'].append(selected_branch)  # Add the selected branch to the list of branches in permissions
+            permissions['branches'][selected_branch] = []  # Add the selected branch to the list of branches in permissions
             update_permissions_file(permissions, original_branch, permissions_file)  # Update the permissions file
 
         if selected_branch and check_branch_permissions(selected_branch, permissions):
@@ -343,7 +343,7 @@ def user_choice_of_commit_by_number(commits):
         except ValueError:
             print("Invalid input, please enter a number.")
 
-def user_choice(items, create_prompt=None, allow_creation=False):
+def user_choice(items, create_prompt=None, allow_creation=True):
     while True:
         choice = input("Select an item (a, b, c, ..., or z for new): ").lower()
         if choice >= 'a' and choice <= chr(ord('a') + len(items) - 1):
