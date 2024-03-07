@@ -240,23 +240,11 @@ def get_tags_for_commit(commit_hash):
        return []
 
 def select_commit(commits):
-    if not commits:
-        print("No commits found matching your search phrase.")
-        return None
-    print("Commits matching your search:")
-    for i, (commit_hash, message, tags) in enumerate(commits[:200], start=1):
-        print(f"{i}. {commit_hash[:7]} - {message} {' '.join(tags)}")
-    while True:
-        try:
-            choice = int(input("Select a commit by number (or 0 to cancel): "))
-            if choice == 0:
-                return None
-            if 1 <= choice <= len(commits):
-                return commits[choice - 1]
-            else:
-                print("Invalid number, please try again.")
-        except ValueError:
-            print("Invalid input, please enter a number.")
+   if not commits:
+       print("No commits found matching your search phrase.")
+       return None
+   print("Commits matching your search:")
+   for i, (commit_hash, message, tags) in enumerate(commits[:200]):
        tag_str = "TAG:>>> " + ", ".join(tags) + " <<<" if tags else ""
        tag_str = colorize(tag_str, 42)  # Green color code
        print(colorize(f"{chr(ord('a') + i)}) {tag_str} {commit_hash} - {message}", 36))  # Cyan color code
