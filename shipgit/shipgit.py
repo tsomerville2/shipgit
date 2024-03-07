@@ -15,6 +15,7 @@ def main_menu():
     print(colorize("""
 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 ░░      ░░░  ░░░░  ░░        ░░       ░░░░░░░░░░      ░░░        ░░        ░
+░░      ░░░  ░░░░  ░░        ░░       ░░░░░░░░░░░      ░░░        ░░        ░
 ▒  ▒▒▒▒▒▒▒▒  ▒▒▒▒  ▒▒▒▒▒  ▒▒▒▒▒  ▒▒▒▒  ▒▒▒▒▒▒▒▒  ▒▒▒▒▒▒▒▒▒▒▒  ▒▒▒▒▒▒▒▒  ▒▒▒▒
 ▓▓      ▓▓▓        ▓▓▓▓▓  ▓▓▓▓▓       ▓▓▓▓▓▓▓▓▓  ▓▓▓   ▓▓▓▓▓  ▓▓▓▓▓▓▓▓  ▓▓▓▓
 ███████  ██  ████  █████  █████  ██████████████  ████  █████  ████████  ████
@@ -23,13 +24,13 @@ def main_menu():
 ░░░ CREATED BY TRAVIS SOMERVILLE ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░                                    
     """, 32))  # Ensure the ASCII art string is properly terminated
  
-    current_branch = subprocess.run("git branch --show-current", shell=True, capture_output=True, text=True).stdout.strip()
-    current_commit = subprocess.run("git rev-parse --short HEAD", shell=True, capture_output=True, text=True).stdout.strip()
-    current_tag = subprocess.run(f"git describe --tags {current_commit}", shell=True, capture_output=True, text=True).stdout.strip()
-    current_tag = current_tag if current_tag else "No tag"
-    print(colorize(f"Current branch: {current_branch}", 34))  # Blue color code
-    print(colorize(f"Current commit: {current_commit}", 34))  # Blue color code
-    print(colorize(f"Current tag: {current_tag}", 34))  # Blue color code
+
+    branch = subprocess.run("git branch --show-current", shell=True, capture_output=True, text=True).stdout.strip()
+    commit = subprocess.run("git rev-parse --short HEAD", shell=True, capture_output=True, text=True).stdout.strip()
+    tag = subprocess.run(f"git describe --tags {commit}", shell=True, capture_output=True, text=True).stdout.strip()
+    tag = tag if tag else "No tag"
+    info = f"Branch: {branch}    Commit: {commit}    TAG: {tag}"
+    print(colorize(info, 36))  # Cyan color code
 
     print(colorize("Select an operation:", 100))
     print(colorize("1) TAGGING", 46))
