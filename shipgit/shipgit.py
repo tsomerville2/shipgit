@@ -157,7 +157,8 @@ def print_permissions_grid(permissions):
     separator = colorize('-' * (branch_col_width + users_col_width + 3), 44)  # +3 for " | " separator
     print(header)
     print(separator)
-    for branch, users in permissions['branches'].items():
+    for branch in sorted(permissions['branches']):
+        users = permissions['branches'][branch]
         users_str = ', '.join(users)
         if len(users_str) > users_col_width:
             users_str = users_str[:users_col_width-3] + '...'
