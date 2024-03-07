@@ -240,15 +240,15 @@ def get_tags_for_commit(commit_hash):
        return []
 
 def select_commit(commits):
-   if not commits:
-       print("No commits found matching your search phrase.")
-       return None
-   print("Commits matching your search:")
-   for i, (commit_hash, message, tags) in enumerate(commits[:200]):
-       tag_str = "TAG:>>> " + ", ".join(tags) + " <<<" if tags else ""
-       tag_str = colorize(tag_str, 42)  # Green color code
-       print(colorize(f"{chr(ord('a') + i)}) {tag_str} {commit_hash} - {message}", 36))  # Cyan color code
-   return user_choice_of_commit(commits)
+    if not commits:
+        print("No commits found matching your search phrase.")
+        return None
+    print("Commits matching your search:")
+    for i, (commit_hash, message, tags) in enumerate(commits[:200], start=1):
+        tag_str = "TAG:>>> " + ", ".join(tags) + " <<<" if tags else ""
+        tag_str = colorize(tag_str, 42)  # Green color code
+        print(colorize(f"{i}) {tag_str} {commit_hash} - {message}", 36))  # Cyan color code
+    return user_choice_of_commit_by_number(commits)
 
 def tag_commit(commit_hash):
    tag_name_input = input(colorize("Enter the tag name: ", 100))
@@ -316,13 +316,18 @@ def select_item(items, message):
     return user_choice(items)
 
 # select one of the previously committed git commits
-def user_choice_of_commit(commits):
-   while True:
-       choice = input("Select an item (a, b, c, ..., or z for new): ").lower()
-       if choice >= 'a' and choice <= chr(ord('a') + len(commits) - 1):
-           return commits[ord(choice) - ord('a')][0]
-       else:
-           print("Invalid choice. Please try again.")
+def user_choice_of_commit_by_number(commits):
+    while True:
+        try:
+            choice = int(input("Select a commit by number (or 0 to cancel): "))
+            if choice == 0:
+                return None
+            if 1 <= choice <= len(commits):
+                return commits[choice - 1][0]
+            else:
+                print("Invalid number, please try again.")
+        except ValueError:
+            print("Invalid input, please enter a number.")
 
 def user_choice(commits, create_prompt=None):
    while True:
