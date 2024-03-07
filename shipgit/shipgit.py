@@ -151,13 +151,18 @@ def permissions_workflow():
         print("Permissions file not found or invalid.")
 
 def print_permissions_grid(permissions):
-    header = colorize(f"{'Branch':<20} | {'Users with Access':<50}", 43)
+    branch_col_width = 20
+    users_col_width = 50
+    header = colorize(f"{'Branch':<{branch_col_width}} | {'Users with Access':<{users_col_width}}", 43)
+    separator = colorize('-' * (branch_col_width + users_col_width + 3), 43)  # +3 for " | " separator
     print(header)
-    print(colorize('-' * len(header), 43))
+    print(separator)
     for branch, users in permissions['branches'].items():
         users_str = ', '.join(users)
-        print(f"{branch:<20} | {users_str:<50}")
-    print()
+        if len(users_str) > users_col_width:
+            users_str = users_str[:users_col_width-3] + '...'
+        print(f"{branch:<{branch_col_width}} | {users_str:<{users_col_width}}")
+    print(separator)
 
 def manage_user_permissions(permissions, branch, username, file_path):
     while True:
