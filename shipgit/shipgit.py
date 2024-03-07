@@ -344,8 +344,6 @@ def user_choice(items, create_prompt=None, allow_creation=False):
            return items[ord(choice) - ord('a')].lstrip('* ')
        elif allow_creation and choice == 'z':
            return input(f"Enter a new {create_prompt} name: ")
-       elif create_prompt and choice == 'z':
-           return input(f"Enter a new {create_prompt} name: ")
        else:
            print("Invalid choice. Please try again.")
 
