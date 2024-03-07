@@ -283,9 +283,15 @@ def find_commits_by_phrase(search_phrase):
        return []
    commits = []
    for line in result.stdout.splitlines():
-       commit_hash, message = line.split(' ', 1)
-       tags = get_tags_for_commit(commit_hash, search_phrase)
-       commits.append((commit_hash, message, tags))
+        commit_hash, message = line.split(' ', 1)
+        # Check if the commit message contains the search_phrase
+        message_matches = search_phrase.lower() in message.lower()
+        # Retrieve tags and check if they contain the search_phrase
+        tags = get_tags_for_commit(commit_hash, search_phrase)
+        tag_matches = len(tags) > 0
+        # Only append the commit if the message or any of the tags match the search_phrase
+        if message_matches or tag_matches:
+            commits.append((commit_hash, message, tags))
    return commits
 
 def get_tags_for_commit(commit_hash, search_phrase):
