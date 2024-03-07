@@ -57,11 +57,11 @@ def main_menu(firsttime=False):
 def info_workflow():
     branches = list_branches()
     header = "=" * 86
-    print(colorize(header, 36))
+    print(colorize(header, 45))
     for branch in branches:
         print_branch_info(branch)
     
-    print(colorize(header, 36))
+    print(colorize(header, 45))
 
     main_menu()
 
@@ -72,7 +72,7 @@ def print_branch_info(branch):
     tag = tag if tag else "No tag"
     info = f"| Branch: {branch:<15} | Commit: {commit:<10} | TAG: {tag[:30].ljust(30)} |"
     #print(f"{info:^60}")
-    print(colorize(info, 36))  # Cyan color code
+    print(colorize(info, 45))  # Cyan color code
 
 def commit_and_push_changes(file_path, commit_message):
     # Check if there are changes to commit
@@ -152,16 +152,17 @@ def permissions_workflow():
 
 def print_permissions_grid(permissions):
     branch_col_width = 20
-    users_col_width = 50
-    header = colorize(f"{'Branch':<{branch_col_width}} | {'Users with Access':<{users_col_width}}", 43)
-    separator = colorize('-' * (branch_col_width + users_col_width + 3), 43)  # +3 for " | " separator
+    users_col_width = 70
+    header = colorize(f"{'Branch':<{branch_col_width}} | {'Users with Access':<{users_col_width}}", 44)
+    separator = colorize('-' * (branch_col_width + users_col_width + 3), 44)  # +3 for " | " separator
     print(header)
     print(separator)
     for branch, users in permissions['branches'].items():
         users_str = ', '.join(users)
         if len(users_str) > users_col_width:
             users_str = users_str[:users_col_width-3] + '...'
-        print(f"{branch:<{branch_col_width}} | {users_str:<{users_col_width}}")
+        this_row = f"{branch:<{branch_col_width}} | {users_str:<{users_col_width}}"
+        print(colorize(this_row, 44))
     print(separator)
 
 def manage_user_permissions(permissions, branch, username, file_path):
@@ -179,6 +180,7 @@ def manage_user_permissions(permissions, branch, username, file_path):
                 permissions['branches'][branch].append(username)
                 update_permissions_file(permissions, branch, file_path)
                 print(f"Added '{username}' to branch '{branch}'.")
+                print_permissions_grid(permissions)
             else:
                 print(f"'{username}' already has access to branch '{branch}'.")
         elif choice == '2':
@@ -189,12 +191,14 @@ def manage_user_permissions(permissions, branch, username, file_path):
             permissions['branches'][branch] = [username]
             update_permissions_file(permissions, branch, file_path)
             print(f"Set '{username}' as the only user with access to branch '{branch}'.")
+            print_permissions_grid(permissions)
         elif choice == '3':
             specific_username = input("Enter the specific username to add: ").strip()
             if specific_username and specific_username not in permissions['branches'][branch]:
                 permissions['branches'][branch].append(specific_username)
                 update_permissions_file(permissions, branch, file_path)
                 print(f"Added '{specific_username}' to branch '{branch}'.")
+                print_permissions_grid(permissions)
             elif specific_username:
                 print(f"'{specific_username}' already has access to branch '{branch}'.")
             else:
@@ -203,19 +207,20 @@ def manage_user_permissions(permissions, branch, username, file_path):
             permissions['branches'][branch] = []
             update_permissions_file(permissions, branch, file_path)
             print(f"Removed all users from branch '{branch}'.")
+            print_permissions_grid(permissions)
         elif choice == '5':
             user_to_remove = input("Enter the username to remove: ")
             if user_to_remove in permissions['branches'][branch]:
                 permissions['branches'][branch].remove(user_to_remove)
                 update_permissions_file(permissions, branch, file_path)
                 print(f"Removed '{user_to_remove}' from branch '{branch}'.")
+                print_permissions_grid(permissions)
             else:
                 print(f"'{user_to_remove}' does not have access to branch '{branch}'.")
         elif choice == '6':
             main_menu()
         else:
             print("Invalid choice. Please select an option from 1 to 6.")
-            print("Invalid choice. Please select an option from 1 to 5.")
 
 def get_github_username():
     command = "git config user.name"
@@ -325,6 +330,8 @@ def tagging_workflow():
         if not success:
             print("Tagging process failed. Returning to main menu.")
             main_menu()
+    
+    main_menu()
 
 def get_last_tags(limit=20):
     command = f"git tag --sort=-creatordate | head -n {limit}"
