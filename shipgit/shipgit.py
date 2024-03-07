@@ -308,7 +308,7 @@ def deploying_workflow():
     if permissions:
         branch_output = subprocess.run("git branch", shell=True, capture_output=True, text=True).stdout
         branches = branch_output.splitlines()
-        selected_branch = select_item(branches, colorize("\nChoose a branch to deploy to:", 43), allow_creation=True)
+        selected_branch = select_item_or_create_new(branches, colorize("\nChoose a branch to deploy to:", 43), "branch")
         if selected_branch and check_branch_permissions(selected_branch, permissions):
             tags = get_last_tags()
             selected_tag = select_item(tags, colorize("\nChoose a tag to deploy:", 41))
