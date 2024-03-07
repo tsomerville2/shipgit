@@ -292,7 +292,7 @@ def select_item_or_create_new(items, message, create_prompt):
    for i, item in enumerate(items):
        print(colorize(f"{chr(ord('a') + i)}) {item}", 33))  # Green color code
    print(colorize(f"z) Create a new {create_prompt}", 32))  # Yellow color code
-   return user_choice(items, create_prompt)
+   return user_choice(items, create_prompt, True)
 
 def get_default_remote_branch():
    command = "git remote show origin | grep 'HEAD branch' | cut -d' ' -f5"
@@ -308,8 +308,13 @@ def deploying_workflow():
     if permissions:
         branch_output = subprocess.run("git branch", shell=True, capture_output=True, text=True).stdout
         branches = branch_output.splitlines()
-        selected_branch = select_item_or_create_new(branches, colorize("\nChoose a branch to deploy to:", 43), "branch")
-        selected_branch = select_item_or_create_new(branches, colorize("\nChoose a branch to deploy to:", 43), "branch")
+        selected_branch, wants_to_create_new = select_item_or_create_new(branches, colorize("\nChoose a branch to deploy to:", 43), "branch")
+        if wants_to_create_new:  # If the user chose to create a new branch make the new branch
+            subprocess.run(f"git branch {selected_branch}", shell=True, check=True)
+            print(f"New branch '{selected_branch}' created.")
+            permissions['branches'].append(selected_branch)  # Add the selected branch to the list of branches in permissions
+            update_permissions_file(permissions, original_branch, permissions_file)  # Update the permissions file
+
         if selected_branch and check_branch_permissions(selected_branch, permissions):
             tags = get_last_tags()
             selected_tag = select_item(tags, colorize("\nChoose a tag to deploy:", 41))
@@ -339,14 +344,15 @@ def user_choice_of_commit_by_number(commits):
             print("Invalid input, please enter a number.")
 
 def user_choice(items, create_prompt=None, allow_creation=False):
-   while True:
-       choice = input("Select an item (a, b, c, ..., or z for new): ").lower()
-       if choice >= 'a' and choice <= chr(ord('a') + len(items) - 1):
-           return items[ord(choice) - ord('a')].lstrip('* ')
-       elif allow_creation and choice == 'z':
-           return input(f"Enter a new {create_prompt} name: ")
-       else:
-           print("Invalid choice. Please try again.")
+    while True:
+        choice = input("Select an item (a, b, c, ..., or z for new): ").lower()
+        if choice >= 'a' and choice <= chr(ord('a') + len(items) - 1):
+            return items[ord(choice) - ord('a')].lstrip('* '), False
+        elif allow_creation and choice == 'z':
+            new_item = input(f"Enter a new {create_prompt} name: ")
+            return new_item, True
+        else:
+            print("Invalid choice. Please try again.")
 
 def tag_and_push(tag_name, commit_hash):
    tag_command = f"git tag {tag_name} {commit_hash}"
